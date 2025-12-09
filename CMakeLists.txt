@@ -3,4 +3,8 @@ project(Axolotol C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(Axolotol main.c)
+add_executable(Axolotol main.c
+        lexer.h
+        token.h
+        lexer.c
+        token.c)
