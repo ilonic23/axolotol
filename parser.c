@@ -10,6 +10,7 @@ parser_t *init_parser(lexer_t *lexer)
     parser_t *parser = malloc(sizeof(parser_t));
     parser->lexer = lexer;
     parser->current_token = lexer_get_next_token(parser->lexer);
+    parser->prev_token = parser->current_token;
 
     return parser;
 }
@@ -17,6 +18,7 @@ void *parser_eat(parser_t *parser, int token_type)
 {
     if (parser->current_token->type == token_type)
     {
+        parser->prev_token = parser->current_token;
         parser->current_token = lexer_get_next_token(parser->lexer);
     }
     else {
@@ -101,16 +103,42 @@ ast_t *parser_parse_expression(parser_t *parser)
 {
     switch (parser->current_token->type)
     {
-    case TOKEN_STRING:
-        return parser_parse_string(parser);
+        case TOKEN_STRING:
+            return parser_parse_string(parser);
+        case TOKEN_ID:
+            return parser_parse_id(parser);
     }
 }
 ast_t *parser_parse_factor(parser_t *parser);
 ast_t *parser_parse_term(parser_t *parser);
 ast_t *parser_parse_func_call(parser_t *parser)
 {
-    printf("Fake Parse FuncCall\n");
-    return NULL;
+    ast_t *func_call = init_ast(AST_FUNC_CALL);
+    parser_eat(parser, TOKEN_LPAREN);
+
+    func_call->function_call_name = parser->prev_token->value;
+
+    func_call->function_call_args = malloc(sizeof(ast_t *));
+
+    ast_t *ast_expr = parser_parse_expression(parser);
+    func_call->function_call_args[0] = ast_expr;
+
+    while (parser->current_token->type == TOKEN_COMMA)
+    {
+        parser_eat(parser, TOKEN_COMMA);
+
+        ast_t *ast_expr = parser_parse_expression(parser);
+        func_call->function_call_args_len += 1;
+        func_call->function_call_args = realloc(
+            func_call->function_call_args,
+            func_call->function_call_args_len * sizeof(ast_t *)
+            );
+        func_call->function_call_args[func_call->function_call_args_len - 1] = ast_expr;
+    }
+
+    parser_eat(parser, TOKEN_RPAREN);
+
+    return func_call;
 }
 
 ast_t *parser_parse_string(parser_t *parser)
