@@ -7,4 +7,8 @@ add_executable(Axolotol main.c
         lexer.h
         token.h
         lexer.c
-        token.c)
+        token.c
+        ast.h
+        ast.c
+        parser.h
+        parser.c)

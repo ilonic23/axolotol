@@ -68,8 +68,6 @@ token_t *lexer_collect_string(lexer_t *lexer){
 }
 
 token_t *lexer_collect_id(lexer_t *lexer) {
-//    lexer_advance(lexer);
-
     char *value = malloc(sizeof(char));
     value[0] = '\0';
 
