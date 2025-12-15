@@ -11,4 +11,6 @@ add_executable(Axolotol main.c
         ast.h
         ast.c
         parser.h
-        parser.c)
+        parser.c
+        visitor.h
+        visitor.c)

@@ -6,11 +6,12 @@ typedef struct Ast
 {
     enum
     {
-        AST_FUNC_CALL,
         AST_VAR_DEFINITION,
         AST_VAR,
+        AST_FUNC_CALL,
         AST_STRING_LITERAL,
         AST_COMPOUND,
+        AST_NOP
     } type;
 
     // AST_VAR_DEFINITION

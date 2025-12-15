@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include "lexer.h"
 #include "parser.h"
+#include "visitor.h"
 
 int main(void) {
-    char *string = "let hi = \"Hello, World!\";\n"
-                   "println(hi);\n";
+    char *string = "let hi = \"Hello, \";\n"
+                   "let hi2 = \"World!\";\n"
+                   "print(hi);\n"
+                   "println(hi2);\n";
 
     printf("%s\n", string);
 
@@ -12,8 +15,7 @@ int main(void) {
 
     ast_t *root = parser_parse(parser);
 
-    printf("AST(%d)\n", root->type);
-    printf("AST_Compound_Size(%d)", root->compound_size);
-
+    visitor_t *visitor = init_visitor();
+    visitor_visit(visitor, root);
     return 0;
 }
