@@ -1,0 +1,4 @@
+let hi = "Hello, ";
+let hi2 = "World!";
+print(hi);
+println(hi2);

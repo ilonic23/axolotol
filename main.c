@@ -1,15 +1,35 @@
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "lexer.h"
 #include "parser.h"
 #include "visitor.h"
 
 int main(void) {
-    char *string = "let hi = \"Hello, \";\n"
-                   "let hi2 = \"World!\";\n"
-                   "print(hi);\n"
-                   "println(hi2);\n";
+    FILE *example_file = fopen("example.axo", "r");
+    if (!example_file)
+    {
+        perror("Can't open example.axo");
+        return 1;
+    }
 
-    printf("%s\n", string);
+    fseek(example_file, 0, SEEK_END);
+    uint64_t size = ftell(example_file);
+    rewind(example_file);
+
+    char *string = malloc(size + 1);
+    if (!string)
+    {
+        printf("Memory allocation failed for file buffer.\n");
+        return 1;
+    }
+
+    fread(string, 1, size, example_file);
+    string[size] = 0;
+
+    printf("%s\n\n", string);
 
     parser_t *parser = init_parser(init_lexer(string));
 
