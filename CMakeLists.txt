@@ -13,6 +13,8 @@ add_executable(Axolotol main.c
         parser.h
         parser.c
         visitor.h
-        visitor.c)
+        visitor.c
+        scope.h
+        scope.c)
 
 configure_file(example.axo "${CMAKE_CURRENT_BINARY_DIR}/example.axo" COPYONLY)

@@ -1,4 +1,17 @@
-let hi = "Hello, ";
-let hi2 = "World!";
-print(hi);
-println(hi2);
+func examplefunc()
+  println("Example function call!");
+  let i = "0";
+  println(i);
+
+  func anotherone()
+    println("Inside of the another one, testing scopes...");
+    println(i);
+  end;
+
+  anotherone();
+end;
+
+examplefunc();
+
+println("Here it won't work! But for some reason it does work.......");
+println(i);

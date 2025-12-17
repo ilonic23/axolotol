@@ -12,6 +12,7 @@ typedef struct Visitor
 visitor_t *init_visitor();
 
 ast_t *visitor_visit(visitor_t *visitor, ast_t *node);
+ast_t *visitor_visit_func_def(visitor_t *visitor, ast_t *node);
 ast_t *visitor_visit_vardef(visitor_t *visitor, ast_t *node);
 ast_t *visitor_visit_var(visitor_t *visitor, ast_t *node);
 ast_t *visitor_visit_func_call(visitor_t *visitor, ast_t *node);

@@ -28,12 +28,13 @@ int main(void) {
 
     fread(string, 1, size, example_file);
     string[size] = 0;
+    fclose(example_file);
 
     printf("%s\n\n", string);
 
     parser_t *parser = init_parser(init_lexer(string));
 
-    ast_t *root = parser_parse(parser);
+    ast_t *root = parser_parse(parser, parser->scope);
 
     visitor_t *visitor = init_visitor();
     visitor_visit(visitor, root);

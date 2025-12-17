@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ast.h"
+
 static ast_t *builtin_println(visitor_t *visitor, ast_t **args, int args_len) {
     for (int i = 0; i < args_len; i++)
     {
@@ -54,6 +56,8 @@ ast_t *visitor_visit(visitor_t *visitor, ast_t *node) {
     {
         case AST_VAR_DEFINITION:
             return visitor_visit_vardef(visitor, node);
+        case AST_FUNC_DEFINITION:
+            return visitor_visit_func_def(visitor, node);
         case AST_VAR:
             return visitor_visit_var(visitor, node);
         case AST_FUNC_CALL:
@@ -88,6 +92,12 @@ ast_t *visitor_visit_vardef(visitor_t *visitor, ast_t *node) {
 
     return node;
 }
+
+ast_t *visitor_visit_func_def(visitor_t *visitor, ast_t *node) {
+    scope_add_funcdef(node->scope, node);
+    return node;
+}
+
 ast_t *visitor_visit_var(visitor_t *visitor, ast_t *node) {
     for (int i = 0; i < visitor->vardefs_len; i++)
     {
@@ -112,6 +122,12 @@ ast_t *visitor_visit_func_call(visitor_t *visitor, ast_t *node) {
     if (strcmp(node->function_call_name, "print") == 0)
     {
         return builtin_print(visitor, node->function_call_args, node->function_call_args_len);
+    }
+    ast_t *fdef = scope_get_funcdef(node->scope, node->function_call_name);
+
+    if (fdef)
+    {
+        return visitor_visit(visitor, fdef->func_def_body);
     }
 
     printf("Unknown function '%s'\n", node->function_call_name);
