@@ -5,8 +5,7 @@
 
 typedef struct Visitor
 {
-    ast_t **vardefs;
-    size_t vardefs_len;
+
 } visitor_t;
 
 visitor_t *init_visitor();

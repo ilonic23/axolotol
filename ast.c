@@ -39,6 +39,8 @@ scope_t *init_scope() {
     scope_t *scope = malloc(sizeof(scope_t));
     scope->function_defs = NULL;
     scope->function_defs_size = 0;
+    scope->vardefs = NULL;
+    scope->vardefs_len = 0;
     return scope;
 }
 
@@ -58,6 +60,7 @@ ast_t *scope_add_funcdef(scope_t *scope, ast_t *fdef) {
     return fdef;
 }
 
+// TODO: Implement a hash table for constant time
 ast_t *scope_get_funcdef(scope_t *scope, const char *name) {
     for (int i = 0; i < scope->function_defs_size; i++)
     {
@@ -67,6 +70,37 @@ ast_t *scope_get_funcdef(scope_t *scope, const char *name) {
         {
             return fdef;
         }
+    }
+
+    return NULL;
+}
+
+ast_t *scope_add_vardef(scope_t *scope, ast_t *vdef) {
+    if (!scope->vardefs)
+    {
+        scope->vardefs = malloc(sizeof(ast_t));
+        scope->vardefs[0] = vdef;
+        scope->vardefs_len += 1;
+    }
+    else
+    {
+        scope->vardefs_len += 1;
+        scope->vardefs = realloc(scope->vardefs,
+            scope->vardefs_len * sizeof(ast_t *));
+        scope->vardefs[scope->vardefs_len - 1] = vdef;
+    }
+
+    return vdef;
+}
+
+// TODO: Implement a hash table for constant time
+ast_t *scope_get_vardef(scope_t *scope, const char *name) {
+    for (int i = 0; i < scope->vardefs_len; i++)
+    {
+        ast_t *vdef = scope->vardefs[i];
+
+        if (strcmp(vdef->variable_def_var_name, name) == 0)
+            return vdef;
     }
 
     return NULL;

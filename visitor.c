@@ -45,8 +45,8 @@ static ast_t *builtin_print(visitor_t *visitor, ast_t **args, int args_len) {
 visitor_t *init_visitor()
 {
     visitor_t *visitor = malloc(sizeof(visitor_t));
-    visitor->vardefs = NULL;
-    visitor->vardefs_len = 0;
+    // visitor->vardefs = NULL;
+    // visitor->vardefs_len = 0;
 
     return visitor;
 }
@@ -75,21 +75,7 @@ ast_t *visitor_visit(visitor_t *visitor, ast_t *node) {
 }
 
 ast_t *visitor_visit_vardef(visitor_t *visitor, ast_t *node) {
-
-    if (!visitor->vardefs)
-    {
-        visitor->vardefs = malloc(sizeof(ast_t));
-        visitor->vardefs[0] = node;
-        visitor->vardefs_len += 1;
-    }
-    else
-    {
-        visitor->vardefs_len += 1;
-        visitor->vardefs = realloc(visitor->vardefs,
-            visitor->vardefs_len * sizeof(ast_t *));
-        visitor->vardefs[visitor->vardefs_len - 1] = node;
-    }
-
+    scope_add_vardef(node->scope, node);
     return node;
 }
 
@@ -99,20 +85,16 @@ ast_t *visitor_visit_func_def(visitor_t *visitor, ast_t *node) {
 }
 
 ast_t *visitor_visit_var(visitor_t *visitor, ast_t *node) {
-    for (int i = 0; i < visitor->vardefs_len; i++)
-    {
-        ast_t *vardef = visitor->vardefs[i];
+    ast_t *vdef = scope_get_vardef(node->scope, node->variable_name);
 
-        if (strcmp(vardef->variable_def_var_name,
-            node->variable_name) == 0)
-        {
-            return visitor_visit(visitor, vardef->variable_def_value);
-        }
+    if (vdef)
+    {
+        return visitor_visit(visitor, vdef->variable_def_value);
     }
 
     printf("Undeclared variable '%s'\n",
         node->variable_name);
-    return node;
+    exit(1);
 }
 ast_t *visitor_visit_func_call(visitor_t *visitor, ast_t *node) {
     if (strcmp(node->function_call_name, "println") == 0)

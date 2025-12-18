@@ -1,14 +1,12 @@
+let name = "John Doe";
+println(name);
+
 func examplefunc()
   println("Example function call!");
   let i = "0";
   println(i);
 
-  func anotherone()
-    println("Inside of the another one, testing scopes...");
-    println(i);
-  end;
 
-  anotherone();
 end;
 
 examplefunc();

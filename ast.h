@@ -48,10 +48,16 @@ typedef struct Scope
 {
     ast_t **function_defs;
     size_t function_defs_size;
+
+    ast_t **vardefs;
+    size_t vardefs_len;
 } scope_t;
 
 scope_t *init_scope();
 ast_t *scope_add_funcdef(scope_t *scope, ast_t *fdef);
 ast_t *scope_get_funcdef(scope_t *scope, const char *name);
+
+ast_t *scope_add_vardef(scope_t *scope, ast_t *vdef);
+ast_t *scope_get_vardef(scope_t *scope, const char *name);
 
 #endif
